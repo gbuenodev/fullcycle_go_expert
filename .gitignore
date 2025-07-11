@@ -1,4 +1,3 @@
-/database
-./database/
-/bin
-/dist
+**/database
+**/bin
+**/dist
