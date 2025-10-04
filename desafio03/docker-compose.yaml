@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:8.0 
     container_name: mysql
     restart: always
     environment:
@@ -15,7 +15,7 @@ services:
       - .docker/mysql:/var/lib/mysql
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.11-management 
     container_name: rabbitmq
     restart: always
     ports:
