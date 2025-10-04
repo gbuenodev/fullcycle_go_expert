@@ -2,6 +2,7 @@ package webserver
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -9,29 +10,36 @@ import (
 
 type WebServer struct {
 	Router        chi.Router
-	Handlers      map[string]http.HandlerFunc
 	WebServerPort string
 }
 
 func NewWebServer(serverPort string) *WebServer {
+	router := chi.NewRouter()
+	// O middleware é adicionado aqui, no momento da criação do router.
+	router.Use(middleware.Logger)
+
 	return &WebServer{
-		Router:        chi.NewRouter(),
-		Handlers:      make(map[string]http.HandlerFunc),
+		Router:        router,
 		WebServerPort: serverPort,
 	}
 }
 
-func (s *WebServer) AddHandler(path string, handler http.HandlerFunc) {
-	s.Handlers[path] = handler
+func (s *WebServer) AddHandler(path string, handlerFunc http.HandlerFunc, method string) {
+	switch strings.ToUpper(method) {
+	case "GET":
+		s.Router.Get(path, handlerFunc)
+	case "POST":
+		s.Router.Post(path, handlerFunc)
+	case "PUT":
+		s.Router.Put(path, handlerFunc)
+	case "DELETE":
+		s.Router.Delete(path, handlerFunc)
+	default:
+		s.Router.Handle(path, handlerFunc)
+	}
 }
 
-// loop through the handlers and add them to the router
-// register middeleware logger
-// start the server
+// O método Start agora apenas inicia o servidor.
 func (s *WebServer) Start() {
-	s.Router.Use(middleware.Logger)
-	for path, handler := range s.Handlers {
-		s.Router.Handle(path, handler)
-	}
 	http.ListenAndServe(s.WebServerPort, s.Router)
 }

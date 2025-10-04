@@ -22,8 +22,6 @@ var setOrderRepositoryDependency = wire.NewSet(
 
 var setEventDispatcherDependency = wire.NewSet(
 	events.NewEventDispatcher,
-	event.NewOrderCreated,
-	wire.Bind(new(events.EventInterface), new(*event.OrderCreated)),
 	wire.Bind(new(events.EventDispatcherInterface), new(*events.EventDispatcher)),
 )
 
@@ -32,6 +30,7 @@ var setOrderCreatedEvent = wire.NewSet(
 	wire.Bind(new(events.EventInterface), new(*event.OrderCreated)),
 )
 
+// Este é um injetor para o caso de uso de criação, usado pelo gRPC e outros.
 func NewCreateOrderUseCase(db *sql.DB, eventDispatcher events.EventDispatcherInterface) *usecase.CreateOrderUseCase {
 	wire.Build(
 		setOrderRepositoryDependency,
@@ -45,6 +44,8 @@ func NewWebOrderHandler(db *sql.DB, eventDispatcher events.EventDispatcherInterf
 	wire.Build(
 		setOrderRepositoryDependency,
 		setOrderCreatedEvent,
+		usecase.NewCreateOrderUseCase,
+		usecase.NewListOrdersUseCase,
 		web.NewWebOrderHandler,
 	)
 	return &web.WebOrderHandler{}
