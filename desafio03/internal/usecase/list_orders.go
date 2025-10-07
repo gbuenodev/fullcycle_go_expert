@@ -1,6 +1,6 @@
 package usecase
 
-import "github.com/devfullcycle/20-CleanArch/internal/entity"
+import "github.com/gbuenodev/fullcycle_go_expert/desafio03/internal/entity"
 
 type ListOrdersOutputDTO struct {
 	Orders []OrderOutputDTO

@@ -1,4 +1,4 @@
-module github.com/devfullcycle/20-CleanArch
+module github.com/gbuenodev/fullcycle_go_expert/desafio03
 
 go 1.25
 

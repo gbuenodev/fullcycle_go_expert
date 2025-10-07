@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/devfullcycle/20-CleanArch/internal/usecase"
+	"github.com/gbuenodev/fullcycle_go_expert/desafio03/internal/usecase"
 )
 
 type WebOrderHandler struct {
