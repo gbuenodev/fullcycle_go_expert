@@ -1,7 +1,7 @@
 # Variáveis
 DB_URL=mysql://root:root@tcp(localhost:3306)/orders?multiStatements=true
 
-.PHONY: run docker-up docker-down server-up generate test migrate-create migrate-up migrate-down proto
+.PHONY: run docker-up docker-down server-up generate test migrate-create migrate-up migrate-down proto graphql
 
 run: docker-up server-up
 
@@ -41,3 +41,7 @@ migrate-down: docker-up
 # gRPC proto
 proto:
 	protoc --proto_path=internal/infra/grpc/protofiles --go_out=. --go-grpc_out=. internal/infra/grpc/protofiles/*.proto
+
+# GraphQL generate
+graphql:
+	go run github.com/99designs/gqlgen generate
