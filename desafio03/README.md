@@ -115,10 +115,9 @@ curl -s http://localhost:8080/order | jq .
 [
   {
     "id": "01J...XYZ",
-    "price": 120.5,
-    "tax": 12.05,
-    "final_price": 132.55,
-    "created_at": "2025-10-01T12:34:56Z"
+    "Price": 120.5,
+    "Tax": 12.05,
+    "FinalPrice": 132.55,
   }
 ]
 ```
