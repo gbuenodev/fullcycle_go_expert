@@ -28,7 +28,6 @@ type ViaCEPConfig struct {
 func LoadConfig(path string) (*Config, error) {
 	viper.SetConfigFile(path + "/.env")
 	viper.SetConfigType("env")
-	viper.AutomaticEnv()
 
 	viper.SetDefault("PORT", "3000")
 	viper.SetDefault("VIACEP_BASE_URL", "https://viacep.com.br/ws")
@@ -39,6 +38,9 @@ func LoadConfig(path string) (*Config, error) {
 			return nil, fmt.Errorf("error reading .env file: %w", err)
 		}
 	}
+
+	// AutomaticEnv must be called AFTER ReadInConfig so environment variables take precedence
+	viper.AutomaticEnv()
 
 	cfg := &Config{
 		Server: ServerConfig{
