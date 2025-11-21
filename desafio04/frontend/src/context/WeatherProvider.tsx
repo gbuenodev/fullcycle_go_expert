@@ -14,8 +14,6 @@ export default function WeatherProvider(
   const [result, setResult] = useState<WeatherData | null>(null);
 
   const searchWeather = useCallback(async (cep: string) => {
-    console.log('Buscando clima para o CEP:', cep);
-
     // Limpar estados anteriores
     setError(null);
     setResult(null);
@@ -23,11 +21,9 @@ export default function WeatherProvider(
     try {
       const data = await fetchWeatherByCep(cep);
       setResult(data);
-      console.log('Clima recebido:', data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao buscar clima';
       setError(errorMessage);
-      console.error('Erro ao buscar clima:', errorMessage);
     }
   }, []);
 

@@ -29,8 +29,6 @@ export default function WeatherForm() {
     try {
       // Envia o CEP limpo (sem hífen) para a API
       await searchWeather(validation.data!);
-    } catch (error) {
-      console.error("Erro ao buscar clima:", error);
     } finally {
       setIsSubmitting(false);
     }

@@ -1,10 +1,9 @@
-.PHONY: help install dev build preview lint clean docker-build docker-run deploy deploy-source update-env logs status delete
+.PHONY: help install dev build preview lint clean docker-build docker-run deploy update-env logs status delete
 
 # Variáveis
+SERVICE_NAME=weather-app
 PROJECT_ID ?= $(shell gcloud config get-value project)
-REGION ?= us-central1
-SERVICE_NAME ?= weather-frontend
-IMAGE_NAME ?= gcr.io/$(PROJECT_ID)/$(SERVICE_NAME)
+REGION=us-central1
 BACKEND_URL ?= http://localhost:3000
 
 help: ## Mostra esta mensagem de ajuda
@@ -39,18 +38,18 @@ docker-run: ## Executa container localmente
 
 docker-test: docker-build docker-run ## Build e executa container
 
-# Google Cloud Run - Deploy
+# Google Cloud Run
 setup-gcloud: ## Configura gcloud e habilita APIs
 	@echo "Configurando gcloud..."
 	gcloud config set project $(PROJECT_ID)
 	gcloud config set run/region $(REGION)
 	gcloud services enable cloudbuild.googleapis.com
 	gcloud services enable run.googleapis.com
-	gcloud services enable containerregistry.googleapis.com
 	@echo "Setup concluído!"
 
-deploy-source: ## Deploy direto do código-fonte (recomendado)
-	@echo "Fazendo deploy de $(SERVICE_NAME)..."
+deploy: ## Deploy no Cloud Run
+	@echo "Deploying $(SERVICE_NAME)..."
+	@if [ -z "$(BACKEND_URL)" ]; then echo "Erro: BACKEND_URL não definido"; echo "Uso: make deploy BACKEND_URL=https://sua-url.run.app"; exit 1; fi
 	gcloud run deploy $(SERVICE_NAME) \
 		--source . \
 		--platform managed \
@@ -58,20 +57,8 @@ deploy-source: ## Deploy direto do código-fonte (recomendado)
 		--allow-unauthenticated \
 		--port 8080 \
 		--set-env-vars VITE_BACKEND_URL=$(BACKEND_URL)
+	@echo "Deployed to Cloud Run!"
 
-deploy: ## Build imagem e faz deploy
-	@echo "Building e fazendo push da imagem..."
-	gcloud builds submit --tag $(IMAGE_NAME)
-	@echo "Fazendo deploy no Cloud Run..."
-	gcloud run deploy $(SERVICE_NAME) \
-		--image $(IMAGE_NAME) \
-		--platform managed \
-		--region $(REGION) \
-		--allow-unauthenticated \
-		--port 8080 \
-		--set-env-vars VITE_BACKEND_URL=$(BACKEND_URL)
-
-# Google Cloud Run - Gerenciamento
 update-env: ## Atualiza variável de ambiente BACKEND_URL
 	@echo "Atualizando variável de ambiente..."
 	gcloud run services update $(SERVICE_NAME) \
@@ -94,7 +81,7 @@ delete: ## Deleta o serviço do Cloud Run
 	@echo "Deletando serviço $(SERVICE_NAME)..."
 	gcloud run services delete $(SERVICE_NAME) --region $(REGION) --quiet
 
-# Configurações avançadas
+# Configurações Avançadas
 set-scaling: ## Configura autoscaling (uso: make set-scaling MIN=0 MAX=10)
 	gcloud run services update $(SERVICE_NAME) \
 		--min-instances $(MIN) \
@@ -120,5 +107,4 @@ info: ## Mostra informações do projeto
 	@echo "Project ID: $(PROJECT_ID)"
 	@echo "Region: $(REGION)"
 	@echo "Service Name: $(SERVICE_NAME)"
-	@echo "Image Name: $(IMAGE_NAME)"
 	@echo "Backend URL: $(BACKEND_URL)"
