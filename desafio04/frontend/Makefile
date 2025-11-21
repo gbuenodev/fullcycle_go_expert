@@ -1,8 +1,12 @@
 .PHONY: help install dev build preview lint clean docker-build docker-run
 
+# Carrega variáveis do .env se existir
+-include .env
+export
+
 # Variáveis
 SERVICE_NAME=weather-app
-BACKEND_URL ?= http://localhost:3000
+VITE_BACKEND_URL ?= http://localhost:3000
 
 help: ## Mostra esta mensagem de ajuda
 	@echo "Comandos disponíveis:"
@@ -29,9 +33,9 @@ clean: ## Limpa node_modules e dist
 
 # Docker
 docker-build: ## Build da imagem Docker
-	docker build -t $(SERVICE_NAME) .
+	docker build --build-arg VITE_BACKEND_URL=$(VITE_BACKEND_URL) -t $(SERVICE_NAME) .
 
 docker-run: ## Executa container localmente
-	docker run -p 8080:8080 --env VITE_BACKEND_URL=$(BACKEND_URL) $(SERVICE_NAME)
+	docker run -p 8080:8080 $(SERVICE_NAME)
 
 docker-test: docker-build docker-run ## Build e executa container
