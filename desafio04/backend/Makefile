@@ -1,9 +1,8 @@
-.PHONY: help build run test clean docker-build docker-run wire deploy
+.PHONY: help build run test clean docker-build docker-run wire
 
 # Variáveis
 SERVICE_NAME=weather-api
 PORT=3000
-REGION=us-central1
 
 help: ## Mostra esta mensagem de ajuda
 	@echo "Comandos disponíveis:"
@@ -67,16 +66,3 @@ docker-build: ## Build da imagem Docker
 docker-run: ## Executa container localmente
 	@echo "Running Docker container on port $(PORT)..."
 	docker run --rm -p $(PORT):8080 --env-file .env $(SERVICE_NAME):latest
-
-# Google Cloud Run
-deploy: ## Deploy no Cloud Run
-	@echo "Deploying to Cloud Run..."
-	@if [ -z "$(WEATHER_API_KEY)" ]; then echo "Erro: WEATHER_API_KEY não definido"; exit 1; fi
-	gcloud run deploy $(SERVICE_NAME) \
-		--source . \
-		--platform managed \
-		--region $(REGION) \
-		--allow-unauthenticated \
-		--port 8080 \
-		--set-env-vars WEATHER_API_KEY=$(WEATHER_API_KEY)
-	@echo "Deployed to Cloud Run!"

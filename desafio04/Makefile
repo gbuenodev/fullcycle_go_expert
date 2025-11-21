@@ -130,35 +130,3 @@ info: ## Mostra informações do ambiente
 	@echo "  Frontend: http://localhost:8080"
 	@echo "  Backend:  http://localhost:3000"
 	@echo ""
-
-# Google Cloud Run
-setup-gcloud: ## Configura Google Cloud
-	@echo "Configurando Google Cloud..."
-	@if [ -z "$(GCP_PROJECT_ID)" ]; then echo "Erro: GCP_PROJECT_ID não definido"; echo "Uso: make setup-gcloud GCP_PROJECT_ID=seu-projeto"; exit 1; fi
-	gcloud config set project $(GCP_PROJECT_ID)
-	gcloud services enable run.googleapis.com
-	gcloud services enable cloudbuild.googleapis.com
-	@echo "Google Cloud configurado!"
-
-deploy-backend: ## Deploy do backend no Cloud Run
-	@echo "Deploying backend to Cloud Run..."
-	@if [ -z "$(WEATHER_API_KEY)" ]; then echo "Erro: WEATHER_API_KEY não definido"; exit 1; fi
-	cd backend && make deploy WEATHER_API_KEY=$(WEATHER_API_KEY)
-	@echo ""
-	@echo "Backend deployed!"
-	@echo "Copie a URL exibida acima para usar no deploy do frontend"
-
-deploy-frontend: ## Deploy do frontend no Cloud Run (requer BACKEND_URL)
-	@echo "Deploying frontend to Cloud Run..."
-	@if [ -z "$(BACKEND_URL)" ]; then echo "Erro: BACKEND_URL não definido"; exit 1; fi
-	cd frontend && make deploy BACKEND_URL=$(BACKEND_URL)
-	@echo ""
-	@echo "Frontend deployed!"
-
-deploy-all: deploy-backend ## Deploy completo (backend + frontend)
-	@echo ""
-	@echo "Aguarde o backend ficar disponível..."
-	@echo "Copie a URL do backend e execute:"
-	@echo ""
-	@echo "  make deploy-frontend BACKEND_URL=https://sua-url-backend.run.app"
-	@echo ""
