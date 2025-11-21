@@ -15,9 +15,12 @@ desafio04/
 ## Stack
 
 ### Backend
-- Go
-- Clean Architecture
-- API REST
+- Go 1.25
+- Clean Architecture (Entity, UseCase, Gateway, Infra)
+- Dependency Injection com Wire
+- Router: chi
+- Configuration: Viper
+- APIs Externas: ViaCEP + WeatherAPI
 
 ### Frontend
 - React 18
@@ -121,10 +124,6 @@ Ambos os serviços possuem health checks configurados:
 - Frontend: `GET http://localhost:8080/health`
 - Backend: `GET http://localhost:3000/health`
 
-### Volumes
-
-Nenhum volume persistente configurado (aplicação stateless).
-
 ## API
 
 ### Endpoint Principal
@@ -138,7 +137,7 @@ GET /weather/{cep}
 
 **Respostas:**
 
-✅ **200 OK**
+**200 OK**
 ```json
 {
   "temp_C": 28.5,
@@ -147,14 +146,14 @@ GET /weather/{cep}
 }
 ```
 
-❌ **404 Not Found**
+**404 Not Found**
 ```json
 {
   "message": "can not find zipcode"
 }
 ```
 
-❌ **422 Unprocessable Entity**
+**422 Unprocessable Entity**
 ```json
 {
   "message": "invalid zipcode"
@@ -184,21 +183,91 @@ make test-api
 curl http://localhost:3000/weather/01310100
 ```
 
-## Deploy
+## Deploy no Cloud Run
 
-### Frontend no Cloud Run
+### Pré-requisitos
 
+1. **Google Cloud SDK** instalado e configurado:
 ```bash
-cd frontend/
-make setup-gcloud PROJECT_ID=seu-projeto
-make deploy-source BACKEND_URL=https://seu-backend.run.app
+gcloud auth login
+gcloud config set project SEU_PROJECT_ID
 ```
 
-Ver [frontend/README.md](frontend/README.md) para instruções completas.
+2. **Habilitar APIs** necessárias:
+```bash
+make setup-gcloud GCP_PROJECT_ID=seu-projeto
 
-### Backend no Cloud Run
+# Ou manualmente
+gcloud services enable run.googleapis.com
+gcloud services enable cloudbuild.googleapis.com
+```
 
-Ver [backend/README.md](backend/README.md) para instruções de deploy.
+3. **Obter API Key** do WeatherAPI:
+   - Acesse: https://www.weatherapi.com/
+   - Crie uma conta gratuita
+   - Copie sua API Key
+
+### Deploy Completo (Backend + Frontend)
+
+**Opção 1: Deploy com comandos da raiz**
+
+```bash
+# 1. Configurar variáveis
+export GCP_PROJECT_ID=seu-projeto-gcp
+export WEATHER_API_KEY=sua-chave-weatherapi
+
+# 2. Deploy do backend
+make deploy-backend
+
+# 3. Copiar URL do backend (será exibida após o deploy)
+export BACKEND_URL=https://weather-api-xxx.run.app
+
+# 4. Deploy do frontend
+make deploy-frontend BACKEND_URL=$BACKEND_URL
+```
+
+**Opção 2: Deploy individual**
+
+#### Backend
+```bash
+cd backend/
+export WEATHER_API_KEY=sua-chave
+make deploy WEATHER_API_KEY=$WEATHER_API_KEY
+```
+
+URL do backend será exibida após deploy (ex: `https://weather-api-xxx.run.app`)
+
+#### Frontend
+```bash
+cd frontend/
+make deploy BACKEND_URL=https://weather-api-xxx.run.app
+```
+
+URL do frontend será exibida após deploy (ex: `https://weather-app-xxx.run.app`)
+
+### Configuração de Variáveis de Ambiente
+
+#### Backend (Cloud Run)
+```bash
+gcloud run services update weather-api \
+  --set-env-vars="PORT=8080,WEATHER_API_KEY=sua-chave,WEATHER_API_BASE_URL=https://api.weatherapi.com/v1,VIACEP_BASE_URL=https://viacep.com.br/ws"
+```
+
+#### Frontend (Build Time)
+```bash
+# Durante o deploy, passe a URL do backend
+make deploy-source BACKEND_URL=https://weather-api-xxx.run.app
+```
+
+### Verificação
+
+```bash
+# Testar backend
+curl https://weather-api-xxx.run.app/weather/01310100
+
+# Acessar frontend no browser
+open https://weather-app-xxx.run.app
+```
 
 ## Troubleshooting
 
@@ -251,8 +320,8 @@ curl http://localhost:3000/health
 - Frontend chama backend via: http://backend:3000 (internal)
 
 ### Produção (Cloud Run)
-- Frontend: https://weather-frontend-xxx.run.app
-- Backend: https://weather-backend-xxx.run.app
+- Frontend: https://weather-app-xxx.run.app
+- Backend: https://weather-api-xxx.run.app
 - Frontend chama backend via: VITE_BACKEND_URL (env var)
 
 ## Variáveis de Ambiente
