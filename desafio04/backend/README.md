@@ -2,21 +2,21 @@
 
 API para consulta de temperatura por CEP (Código Postal Brasileiro).
 
-## 🏗️ Arquitetura
+## Arquitetura
 
 - **Clean Architecture** com separação de camadas
 - **Dependency Injection** com Google Wire
 - **HTTP Router** com chi
 - **Configuration** com Viper
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
-- Go 1.23+
+- Go 1.25+
 - Docker (para containerização)
 - Google Cloud SDK (para deploy)
 - Wire CLI: `go install github.com/google/wire/cmd/wire@latest`
 
-## 🚀 Como usar
+## Como usar
 
 ### Configuração
 
@@ -65,15 +65,14 @@ make docker-run
 ### Deploy no Cloud Run
 
 ```bash
-# Configurar variáveis (substitua com seu projeto)
-export GCP_PROJECT_ID=seu-projeto-gcp
+# Configurar variável
 export WEATHER_API_KEY=sua-chave
 
-# Deploy completo (build + push + deploy)
-make deploy-dev
+# Deploy
+make deploy WEATHER_API_KEY=$WEATHER_API_KEY
 ```
 
-## 📡 Endpoints
+## Endpoints
 
 ### GET /weather/{zipcode}
 
@@ -98,7 +97,7 @@ curl http://localhost:3000/weather/01310100
 - `404` - CEP não encontrado: `{"message": "can not find zipcode"}`
 - `500` - Erro interno: `{"message": "internal server error"}`
 
-## 🧪 Testes
+## Testes
 
 ```bash
 # Rodar todos os testes
@@ -108,7 +107,7 @@ make test
 make test-coverage
 ```
 
-## 📦 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 backend/
@@ -131,7 +130,7 @@ backend/
     └── validator/      # Validações reutilizáveis
 ```
 
-## 🔧 Comandos Makefile
+## Comandos Makefile
 
 | Comando | Descrição |
 |---------|-----------|
@@ -146,9 +145,9 @@ backend/
 | `make deploy` | Deploy no Cloud Run |
 | `make dev` | Wire + Build + Run |
 
-## 📝 Tecnologias
+## Tecnologias
 
-- **Go 1.23**
+- **Go 1.25**
 - **chi** - HTTP Router
 - **Viper** - Configuration
 - **Wire** - Dependency Injection
