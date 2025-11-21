@@ -2,6 +2,12 @@
 
 Aplicação fullstack para consultar informações de clima baseado em CEP brasileiro.
 
+DEMOS DISPONÍVEIS EM:
+- Front: [APP](https://weather-app-watebi5u2q-uc.a.run.app/)
+- Back: [API](https://weather-api-watebi5u2q-uc.a.run.app/)
+
+** Veja rotas disponíveis na API [aqui](#api).
+
 ## Arquitetura
 
 ```
