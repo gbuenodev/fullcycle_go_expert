@@ -78,5 +78,5 @@ deploy: ## Deploy no Cloud Run
 		--region $(REGION) \
 		--allow-unauthenticated \
 		--port 8080 \
-		--set-env-vars PORT=8080,WEATHER_API_KEY=$(WEATHER_API_KEY)
+		--set-env-vars WEATHER_API_KEY=$(WEATHER_API_KEY)
 	@echo "Deployed to Cloud Run!"

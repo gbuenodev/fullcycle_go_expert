@@ -4,8 +4,8 @@
 *.dll
 *.so
 *.dylib
-server
-weather-api
+/server
+/weather-api
 
 # Test binary
 *.test
@@ -34,6 +34,3 @@ Thumbs.db
 
 # Logs
 *.log
-
-# Wire generated files
-wire_gen.go
