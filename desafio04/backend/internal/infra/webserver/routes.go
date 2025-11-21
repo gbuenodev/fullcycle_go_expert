@@ -1,6 +1,8 @@
 package webserver
 
 import (
+	"net/http"
+
 	"github.com/gbuenodev/fullcycle_go_expert/desafio04/backend/internal/infra/api"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -33,6 +35,13 @@ func (rt *Router) SetupRoutes() *chi.Mux {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
+
+	// Health check endpoint
+	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"ok"}`))
+	})
 
 	r.Get("/weather/{zipcode}", rt.WeatherHandler.GetWeatherByZipCode)
 
