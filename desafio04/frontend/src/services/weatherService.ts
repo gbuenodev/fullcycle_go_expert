@@ -2,6 +2,7 @@ import api from '../api';
 import { AxiosError } from 'axios';
 
 export interface WeatherResponse {
+  city: string; 
   temp_C: number;
   temp_F: number;
   temp_K: number;

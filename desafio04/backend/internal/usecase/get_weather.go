@@ -53,6 +53,7 @@ func (uc *GetWeatherUseCase) Execute(ctx context.Context, zipCode string) (*dto.
 	address.SetWeather(tempCelsius)
 
 	return &dto.WeatherResponseDTO{
+		City:  address.City,
 		TempC: round(address.Weather.Temperature.Celsius, 2),
 		TempF: round(address.Weather.Temperature.Fahrenheit, 2),
 		TempK: round(address.Weather.Temperature.Kelvin, 2),
