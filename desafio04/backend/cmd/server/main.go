@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/gbuenodev/fullcycle_go_expert/desafio04/backend/config"
+	"github.com/gbuenodev/fullcycle_go_expert/desafio04/backend/internal/observability"
 )
 
 func main() {
@@ -11,6 +13,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+
+	ctx := context.Background()
+	shutdown, err := observability.InitTelemetry(ctx)
+	if err != nil {
+		log.Fatalf("Failed to initialize telemetry: %v", err)
+	}
+	defer func() {
+		if err := shutdown(ctx); err != nil {
+			log.Printf("Error during telemetry shutdown: %v", err)
+		}
+	}()
 
 	webServer, err := InitializeWebServer(cfg)
 	if err != nil {

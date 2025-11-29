@@ -9,6 +9,9 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
+      - OTEL_SERVICE_NAME=weather-api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=jaeger:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
     networks:
       - weather-network
     restart: unless-stopped
@@ -41,6 +44,33 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # Jaeger
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    restart: unless-stopped
+    container_name: weather-jaeger
+    ports:
+      - "16686:16686"
+      - "4318:4318"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - "weather-network"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: weather-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml 
+    ports:
+      - "9090:9090"
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml" 
+    networks:
+      - "weather-network"
+    
 
 networks:
   weather-network:
