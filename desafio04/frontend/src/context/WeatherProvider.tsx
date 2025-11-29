@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import type { ReactNode } from "react";
-import WeatherContext, { type WeatherData } from "./WeatherContext";
+import WeatherContext, { type WeatherData, type Theme } from "./WeatherContext";
 import { fetchWeatherByCep } from "../services/weatherService";
 
 interface WeatherContextProviderProps {
@@ -12,6 +12,7 @@ export default function WeatherProvider(
 ) {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<WeatherData | null>(null);
+  const [theme, setTheme] = useState<Theme>('day');
 
   const searchWeather = useCallback(async (cep: string) => {
     // Limpar estados anteriores
@@ -27,13 +28,19 @@ export default function WeatherProvider(
     }
   }, []);
 
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'day' ? 'night' : 'day');
+  }, []);
+
   const value = useMemo(
     () => ({
       error,
       result,
       searchWeather,
+      theme,
+      toggleTheme,
     }),
-    [error, result, searchWeather]
+    [error, result, searchWeather, theme, toggleTheme]
   );
 
   return (

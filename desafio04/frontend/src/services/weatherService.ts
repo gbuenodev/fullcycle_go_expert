@@ -10,7 +10,7 @@ export interface WeatherResponse {
 
 export async function fetchWeatherByCep(cep: string): Promise<WeatherResponse> {
   try {
-    const { data } = await api.get<WeatherResponse>(`/weather/${cep}`);
+    const { data } = await api.post<WeatherResponse>('/weather', { cep });
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
