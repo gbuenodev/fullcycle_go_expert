@@ -17,7 +17,7 @@ DEMOS DISPONÍVEIS EM:
 - Front: [APP](https://weather-app-watebi5u2q-uc.a.run.app/)
 - Back: [API](https://weather-api-watebi5u2q-uc.a.run.app/)
 
-** Veja rotas disponíveis na API [aqui](#api).
+** Veja rotas disponíveis na API [aqui](#API_Endpoints).
 
 ## Arquitetura
 
@@ -64,7 +64,7 @@ Distributed Tracing Demo:
 └──────────────┘        └──────────────┘
 ```
 
-## Stack Tecnológica
+## Stack
 
 ### Backend (weather-api)
 - **Go 1.23**
