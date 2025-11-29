@@ -1,5 +1,4 @@
 services:
-  # Backend - Go API
   backend:
     build:
       context: ./backend
@@ -10,8 +9,7 @@ services:
     environment:
       - PORT=3000
       - OTEL_SERVICE_NAME=weather-api
-      - OTEL_EXPORTER_OTLP_ENDPOINT=jaeger:4318
-      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
     networks:
       - weather-network
     restart: unless-stopped
@@ -22,7 +20,25 @@ services:
       retries: 3
       start_period: 40s
 
-  # Frontend - React
+  input-service:
+    build:
+      context: ./input-service
+      dockerfile: Dockerfile
+    container_name: weather-input-service
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - OTEL_SERVICE_NAME=input-service
+      - ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - BACKEND_URL=http://backend:3000/weather
+    networks:
+      - weather-network
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - zipkin
+
   frontend:
     build:
       context: ./frontend
@@ -45,18 +61,14 @@ services:
       retries: 3
       start_period: 40s
 
-  # Jaeger
-  jaeger:
-    image: jaegertracing/all-in-one:latest
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: weather-zipkin
     restart: unless-stopped
-    container_name: weather-jaeger
     ports:
-      - "16686:16686"
-      - "4318:4318"
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
+      - "9411:9411"
     networks:
-      - "weather-network"
+      - weather-network
 
   prometheus:
     image: prom/prometheus:latest
