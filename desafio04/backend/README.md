@@ -11,9 +11,8 @@ API para consulta de temperatura por CEP (Código Postal Brasileiro).
 
 ## Pré-requisitos
 
-- Go 1.25+
+- Go 1.23+
 - Docker (para containerização)
-- Google Cloud SDK (para deploy)
 - Wire CLI: `go install github.com/google/wire/cmd/wire@latest`
 
 ## Como usar
@@ -62,30 +61,30 @@ make docker-build
 make docker-run
 ```
 
-### Deploy no Cloud Run
-
-```bash
-# Configurar variável
-export WEATHER_API_KEY=sua-chave
-
-# Deploy
-make deploy WEATHER_API_KEY=$WEATHER_API_KEY
-```
-
 ## Endpoints
 
-### GET /weather/{zipcode}
+### POST /weather
 
 Retorna a temperatura atual para o CEP informado.
 
+**Request Body:**
+```json
+{
+  "cep": "01310100"
+}
+```
+
 **Exemplo:**
 ```bash
-curl http://localhost:3000/weather/01310100
+curl -X POST http://localhost:3000/weather \
+  -H "Content-Type: application/json" \
+  -d '{"cep":"01310100"}'
 ```
 
 **Resposta de sucesso (200):**
 ```json
 {
+  "city": "São Paulo",
   "temp_C": 28.5,
   "temp_F": 83.3,
   "temp_K": 301.65
@@ -93,9 +92,41 @@ curl http://localhost:3000/weather/01310100
 ```
 
 **Erros:**
+- `400` - Request body inválido: `{"message": "invalid request body"}`
 - `422` - CEP inválido: `{"message": "invalid zipcode"}`
 - `404` - CEP não encontrado: `{"message": "can not find zipcode"}`
 - `500` - Erro interno: `{"message": "internal server error"}`
+
+## Observabilidade
+
+### OpenTelemetry & Distributed Tracing
+
+O backend possui instrumentação completa com OpenTelemetry:
+
+**Configuração via environment variables:**
+```env
+OTEL_SERVICE_NAME=weather-api
+ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+```
+
+**Spans criados automaticamente:**
+- HTTP requests (via middleware `otelhttp`)
+- Chamadas ao ViaCEP
+- Chamadas ao WeatherAPI
+
+**Trace context propagation:**
+O backend recebe e propaga trace context via HTTP headers, permitindo distributed tracing quando chamado pelo input-service.
+
+### Métricas (Prometheus)
+
+**Endpoint:** `GET /metrics`
+
+Expõe métricas no formato Prometheus:
+```bash
+curl http://localhost:3000/metrics
+```
+
+Prometheus configurado para scraping automático (veja `prometheus.yml` na raiz do projeto).
 
 ## Testes
 
@@ -142,14 +173,16 @@ backend/
 | `make clean` | Remove artifacts |
 | `make docker-build` | Build da imagem Docker |
 | `make docker-run` | Roda container localmente |
-| `make deploy` | Deploy no Cloud Run |
 | `make dev` | Wire + Build + Run |
 
 ## Tecnologias
 
-- **Go 1.25**
+- **Go 1.23**
 - **chi** - HTTP Router
 - **Viper** - Configuration
 - **Wire** - Dependency Injection
+- **OpenTelemetry** - Observability
+- **Zipkin** - Distributed Tracing
+- **Prometheus** - Metrics
 - **WeatherAPI** - Dados de temperatura
 - **ViaCEP** - Consulta de CEP

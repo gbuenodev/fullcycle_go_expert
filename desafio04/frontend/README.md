@@ -1,35 +1,39 @@
 # Weather App - Frontend
 
-Frontend React + TypeScript para consultar informações de clima baseado no CEP brasileiro.
+Interface web moderna para consulta de clima por CEP brasileiro.
 
-## Tecnologias
+## Stack
 
-- **React 18** - Biblioteca UI
-- **TypeScript** - Tipagem estática
-- **Vite** - Build tool e dev server
-- **Material-UI (MUI)** - Componentes UI
-- **Axios** - Cliente HTTP
-- **Zod** - Validação de esquemas
-- **React Input Mask** - Máscara de input
+- React 18
+- TypeScript
+- Vite (build tool)
+- Material-UI (MUI)
+- Axios (HTTP client)
+- Zod (validation)
+- React Input Mask
 
-## Arquitetura
+## Estrutura
 
 ```
-src/
-├── api/              # Configuração Axios
-├── components/       # Componentes React
-│   ├── Loading.tsx
-│   ├── WeatherForm.tsx
-│   └── WeatherResult.tsx
-├── context/          # Context API
-│   ├── WeatherContext.tsx
-│   └── WeatherProvider.tsx
-├── hooks/            # Custom hooks
-│   └── useWeather.ts
-├── services/         # Serviços de API
-│   └── weatherService.ts
-└── utils/            # Utilitários
-    └── validation.ts
+frontend/
+├── src/
+│   ├── components/       # Componentes React
+│   │   ├── Loading.tsx
+│   │   ├── WeatherForm.tsx
+│   │   └── WeatherResult.tsx
+│   ├── context/          # Context API
+│   │   ├── WeatherContext.tsx
+│   │   └── WeatherProvider.tsx
+│   ├── hooks/            # Custom hooks
+│   │   └── useWeather.ts
+│   ├── services/         # API calls
+│   │   └── weatherService.ts
+│   ├── theme/            # MUI theme config
+│   ├── utils/            # Utilitários
+│   │   └── validation.ts
+│   ├── api.ts            # Axios instance
+│   └── main.tsx          # Entry point
+└── package.json
 ```
 
 ## Funcionalidades
@@ -37,18 +41,35 @@ src/
 - Formulário com validação de CEP brasileiro
 - Máscara automática (formato: 00000-000)
 - Consulta de temperatura em Celsius, Fahrenheit e Kelvin
-- Tratamento de erros (404, 422)
+- Exibição da cidade encontrada
+- Tratamento de erros (400, 404, 422, 500)
 - Loading states
 - UI responsiva e moderna
 
-## Como usar
+## Configuração
+
+### Environment Variables
+
+**Build time:**
+```env
+VITE_BACKEND_URL=http://localhost:3000
+```
+
+Esta variável é injetada durante o build via Docker build args.
+
+### Docker Build
+
+O Dockerfile aceita build arg:
+```bash
+docker build --build-arg VITE_BACKEND_URL=http://localhost:3000 -t frontend .
+```
 
 ## Desenvolvimento Local
 
 ### Pré-requisitos
 
 - Node.js 18+
-- npm ou yarn
+- npm
 
 ### Instalação
 
@@ -56,15 +77,7 @@ src/
 # Instalar dependências
 npm install
 
-# Configurar variáveis de ambiente
-cp .env.example .env
-# Editar .env com a URL do backend
-```
-
-### Executar
-
-```bash
-# Modo desenvolvimento
+# Dev server (hot reload)
 npm run dev
 
 # Build de produção
@@ -73,93 +86,84 @@ npm run build
 # Preview do build
 npm run preview
 
-# Lint
+# Linter
 npm run lint
 ```
 
-## Variáveis de Ambiente
-
-Crie um arquivo `.env` na raiz do projeto:
-
-```env
-VITE_BACKEND_URL=http://localhost:3000
-```
-
-## Docker
-
-### Build da imagem
+## Comandos Make
 
 ```bash
-docker build -t weather-app .
+make help          # Lista todos os comandos
+make install       # npm install
+make dev           # Inicia dev server
+make build         # Build de produção
+make lint          # Executa linter
+make docker-build  # Build da imagem Docker
+make docker-run    # Roda container
 ```
 
-### Executar localmente
+## Integração com Backend
 
-```bash
-docker run -p 8080:8080 weather-app
+**API Service:** `src/services/weatherService.ts`
+
+```typescript
+const { data } = await api.post<WeatherResponse>('/weather', { cep });
 ```
 
-Acesse: http://localhost:8080
-
-## Deploy no Google Cloud Run
-
-### Pré-requisitos
-
-- Google Cloud CLI instalado
-- Projeto GCP criado
-- Billing habilitado
-
-### Deploy com Makefile
-
-```bash
-# 1. Configurar projeto e habilitar APIs (uma vez)
-make setup-gcloud PROJECT_ID=seu-projeto-id
-
-# 2. Deploy
-make deploy BACKEND_URL=https://seu-backend.run.app
-
-# 3. Ver URL do serviço
-make url
-
-# Atualizar variável de ambiente depois
-make update-env BACKEND_URL=https://novo-backend.run.app
-```
-
-## API Backend
-
-O frontend espera um backend com o seguinte endpoint:
-
-```
-GET /weather/{cep}
-```
-
-**Respostas:**
-
-- `200 OK`:
+**Request:**
 ```json
 {
-  "temp_C": 28.5,
-  "temp_F": 83.3,
-  "temp_K": 301.65
+  "cep": "01310100"
 }
 ```
 
-- `404 Not Found`: CEP não encontrado
-- `422 Unprocessable Entity`: CEP inválido
+**Response type:**
+```typescript
+interface WeatherResponse {
+  city: string;
+  temp_C: number;
+  temp_F: number;
+  temp_K: number;
+}
+```
 
-## Comandos Makefile
+**Error handling:**
+- 400: Request body inválido
+- 422: CEP inválido
+- 404: CEP não encontrado
+- 500: Erro interno
 
-| Comando | Descrição |
-|---------|-----------|
-| `make help` | Mostra todos os comandos |
-| `make install` | Instala dependências |
-| `make dev` | Servidor de desenvolvimento |
-| `make build` | Build de produção |
-| `make lint` | Executa linter |
-| `make docker-build` | Build da imagem Docker |
-| `make docker-run` | Roda container localmente |
-| `make deploy` | Deploy no Cloud Run |
+## UI Components
 
-## Licença
+### WeatherForm
+- Input field com máscara de CEP
+- Validação com Zod
+- Submit handler
+- Estados de loading
 
-MIT
+### WeatherResult
+- Display de temperatura (C, F, K)
+- Display de cidade
+- Estados de loading/error
+- Formatação de números
+
+### Loading
+- Spinner de carregamento
+- Feedback visual durante requests
+
+### Theme
+- MUI theme customizado
+- Cores e tipografia consistentes
+- Componentes estilizados
+
+## Build & Deploy
+
+O frontend é servido via Nginx no container:
+
+**Port:** 8080
+**Health check:** `GET /health`
+
+## Acesso
+
+**Development:** http://localhost:5173 (Vite dev server)
+**Production (Docker):** http://localhost:8080
