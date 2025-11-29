@@ -33,6 +33,26 @@ func (h *WeatherHandler) GetWeatherByZipCode(w http.ResponseWriter, r *http.Requ
 	json.NewEncoder(w).Encode(res)
 }
 
+func (h *WeatherHandler) PostWeatherByZipCode(w http.ResponseWriter, r *http.Request) {
+	var reqBody dto.AddressRequestDTO
+	err := json.NewDecoder(r.Body).Decode(&reqBody)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(dto.ErrorResponseDTO{Message: "invalid request body"})
+		return
+	}
+
+	res, err := h.GetWeatherUseCase.Execute(r.Context(), reqBody.Cep)
+	if err != nil {
+		h.handleError(w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(res)
+}
+
 func (h *WeatherHandler) handleError(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json")
 

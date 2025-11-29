@@ -44,6 +44,7 @@ func (rt *Router) SetupRoutes() *chi.Mux {
 	})
 
 	r.Get("/weather/{zipcode}", rt.WeatherHandler.GetWeatherByZipCode)
+	r.Post("/weather", rt.WeatherHandler.PostWeatherByZipCode)
 
 	return r
 }
