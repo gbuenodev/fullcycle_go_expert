@@ -17,7 +17,7 @@ DEMOS DISPONÍVEIS EM:
 - Front: [APP](https://weather-app-watebi5u2q-uc.a.run.app/)
 - Back: [API](https://weather-api-watebi5u2q-uc.a.run.app/)
 
-** Veja rotas disponíveis na API [aqui](#API_Endpoints).
+** Veja rotas disponíveis na API [aqui](#api-endpoints).
 
 ## Arquitetura
 
