@@ -6,7 +6,6 @@ import (
 
 	"github.com/gbuenodev/fullcycle_go_expert/desafio04/backend/internal/dto"
 	"github.com/gbuenodev/fullcycle_go_expert/desafio04/backend/internal/usecase"
-	"github.com/go-chi/chi/v5"
 )
 
 type WeatherHandler struct {
@@ -17,20 +16,6 @@ func NewWeatherHandler(getWeatherUseCase *usecase.GetWeatherUseCase) *WeatherHan
 	return &WeatherHandler{
 		GetWeatherUseCase: getWeatherUseCase,
 	}
-}
-
-func (h *WeatherHandler) GetWeatherByZipCode(w http.ResponseWriter, r *http.Request) {
-	zipCode := chi.URLParam(r, "zipcode")
-
-	res, err := h.GetWeatherUseCase.Execute(r.Context(), zipCode)
-	if err != nil {
-		h.handleError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
 }
 
 func (h *WeatherHandler) PostWeatherByZipCode(w http.ResponseWriter, r *http.Request) {

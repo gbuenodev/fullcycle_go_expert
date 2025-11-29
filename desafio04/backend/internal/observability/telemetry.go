@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/exporters/prometheus"
+	"go.opentelemetry.io/otel/exporters/zipkin"
 	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -49,12 +49,11 @@ func initTracer(ctx context.Context) (shutdown func(context.Context) error, err 
 		return nil, err
 	}
 
-	exporter, err := otlptracehttp.New(ctx,
-		otlptracehttp.WithEndpoint(os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")),
-		otlptracehttp.WithInsecure(),
+	exporter, err := zipkin.New(
+		os.Getenv("ZIPKIN_ENDPOINT"),
 	)
 	if err != nil {
-		log.Printf("failed to create trace exporter: %v", err)
+		log.Printf("failed to create zipkin exporter: %v", err)
 		return nil, err
 	}
 

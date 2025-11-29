@@ -7,6 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 type Router struct {
@@ -36,6 +38,9 @@ func (rt *Router) SetupRoutes() *chi.Mux {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
 
+	// OTEL middleware
+	r.Use(otelhttp.NewMiddleware("http-server"))
+
 	// Health check endpoint
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -43,7 +48,9 @@ func (rt *Router) SetupRoutes() *chi.Mux {
 		w.Write([]byte(`{"status":"ok"}`))
 	})
 
-	r.Get("/weather/{zipcode}", rt.WeatherHandler.GetWeatherByZipCode)
+	// Metrics exporter route
+	r.Handle("/metrics", promhttp.Handler())
+
 	r.Post("/weather", rt.WeatherHandler.PostWeatherByZipCode)
 
 	return r
