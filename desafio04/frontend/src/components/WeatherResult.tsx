@@ -20,12 +20,11 @@ export default function WeatherResult() {
     return (
       <Paper
         elevation={0}
-        className="glass-result"
+        className={`glass-panel glass-panel--${theme} transition-colors`}
         sx={{
           p: 3,
           borderRadius: 4,
-          background: 'transparent',
-          border: `1px solid ${currentTheme.glassResult.border}`,
+          backgroundColor: 'transparent',
         }}
       >
         <Alert
@@ -52,13 +51,12 @@ export default function WeatherResult() {
     return (
       <Paper
         elevation={0}
-        className="glass-result transition-colors"
+        className={`glass-panel glass-panel--${theme} transition-colors`}
         sx={{
           p: { xs: 3, sm: 4 },
           borderRadius: 4,
           color: currentTheme.text.onGlass,
-          background: 'transparent',
-          border: `1px solid ${currentTheme.glassResult.border}`,
+          backgroundColor: 'transparent',
         }}
       >
         {/* Location Header */}
@@ -164,11 +162,10 @@ export default function WeatherResult() {
         >
           <Card
             elevation={0}
-            className="glass-card"
+            className={`glass-card glass-card--${theme} transition-colors`}
             sx={{
               borderRadius: 3,
-              background: 'transparent',
-              border: `1px solid ${currentTheme.glassCard.border}`,
+              backgroundColor: 'transparent',
             }}
           >
             <CardContent sx={{ textAlign: 'center', py: 3, px: 2 }}>
@@ -199,11 +196,10 @@ export default function WeatherResult() {
 
           <Card
             elevation={0}
-            className="glass-card"
+            className={`glass-card glass-card--${theme} transition-colors`}
             sx={{
               borderRadius: 3,
-              background: 'transparent',
-              border: `1px solid ${currentTheme.glassCard.border}`,
+              backgroundColor: 'transparent',
             }}
           >
             <CardContent sx={{ textAlign: 'center', py: 3, px: 2 }}>

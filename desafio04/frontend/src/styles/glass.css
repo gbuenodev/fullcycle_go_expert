@@ -1,0 +1,90 @@
+/* Glassmorphism Effects */
+:root {
+  --blur: 12px;
+  --white0: hsla(0, 0%, 100%, 0);
+  --white50: hsla(0, 0%, 100%, 0.05);
+  --white200: hsla(0, 0%, 100%, 0.2);
+  --white: hsl(0, 0%, 100%);
+}
+
+/* Base glass panel */
+.glass-panel {
+  position: relative;
+  backdrop-filter: blur(var(--blur)) !important;
+  -webkit-backdrop-filter: blur(var(--blur)) !important;
+  background-image: linear-gradient(135deg, var(--white200), var(--white50)) !important;
+}
+
+.glass-panel::before,
+.glass-panel::after {
+  border-radius: inherit;
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.glass-panel::before {
+  border: 1px solid var(--white);
+  mask-image: linear-gradient(135deg, var(--white), var(--white0) 50%);
+  -webkit-mask-image: linear-gradient(135deg, var(--white), var(--white0) 50%);
+}
+
+/* Day theme variant */
+.glass-panel--day {
+  background-image: linear-gradient(135deg, hsla(0, 0%, 100%, 0.35), hsla(0, 0%, 100%, 0.15)) !important;
+}
+
+.glass-panel--day::after {
+  border: 1px solid rgba(26, 26, 46, 0.25);
+  mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+  -webkit-mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+}
+
+/* Night theme variant */
+.glass-panel--night::after {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+  -webkit-mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+}
+
+/* Glass cards */
+.glass-card {
+  position: relative;
+  backdrop-filter: blur(var(--blur)) !important;
+  -webkit-backdrop-filter: blur(var(--blur)) !important;
+  background-image: linear-gradient(135deg, var(--white200), var(--white50)) !important;
+}
+
+.glass-card::before,
+.glass-card::after {
+  border-radius: inherit;
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.glass-card::before {
+  border: 1px solid var(--white);
+  mask-image: linear-gradient(135deg, var(--white), var(--white0) 50%);
+  -webkit-mask-image: linear-gradient(135deg, var(--white), var(--white0) 50%);
+}
+
+.glass-card--day {
+  background-image: linear-gradient(135deg, hsla(0, 0%, 100%, 0.35), hsla(0, 0%, 100%, 0.15)) !important;
+}
+
+.glass-card--day::after {
+  border: 1px solid rgba(26, 26, 46, 0.3);
+  mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+  -webkit-mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+}
+
+.glass-card--night::after {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+  -webkit-mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+}

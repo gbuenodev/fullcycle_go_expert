@@ -19,13 +19,46 @@ body {
   min-height: 100vh;
 }
 
-/* Background Gradient Animation */
-@keyframes gradientShift {
+/* Background Gradient Animation - Natural light drifting */
+
+/* Day theme - Subtle drift like sun moving across sky */
+@keyframes dayLightShift {
   0% {
     background-position: 0% 50%;
   }
-  50% {
-    background-position: 100% 50%;
+  20% {
+    background-position: 30% 70%;
+  }
+  40% {
+    background-position: 70% 65%;
+  }
+  60% {
+    background-position: 100% 45%;
+  }
+  80% {
+    background-position: 60% 30%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Night theme - Gentle drift like stars rotating */
+@keyframes nightLightShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  20% {
+    background-position: 30% 70%;
+  }
+  40% {
+    background-position: 70% 65%;
+  }
+  60% {
+    background-position: 100% 45%;
+  }
+  80% {
+    background-position: 60% 30%;
   }
   100% {
     background-position: 0% 50%;
@@ -33,9 +66,16 @@ body {
 }
 
 .animated-background {
-  background-size: 400% 400%;
-  animation: gradientShift 20s ease infinite;
-  transition: background 1.5s ease-in-out;
+  background-size: 250% 250%;
+  transition: background-image 1.5s ease-in-out;
+}
+
+.animated-background--day {
+  animation: dayLightShift 40s ease-in-out infinite;
+}
+
+.animated-background--night {
+  animation: nightLightShift 40s ease-in-out infinite;
 }
 
 /* Button Gradient Animation */
@@ -55,39 +95,6 @@ body {
   background-size: 300% 300%;
   animation: buttonShift 8s ease infinite;
   transition: all 0.5s ease-in-out;
-}
-
-/* Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.20);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-}
-
-.glass-form {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(60px);
-  -webkit-backdrop-filter: blur(60px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-}
-
-.glass-result {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(60px);
-  -webkit-backdrop-filter: blur(60px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.30);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.40);
-  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.2);
 }
 
 /* Text Effects */

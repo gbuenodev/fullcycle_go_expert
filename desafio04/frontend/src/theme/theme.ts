@@ -1,10 +1,10 @@
 import { createTheme } from '@mui/material/styles';
 
-// Day Theme - Clear morning sky
+// Day Theme - Clear morning sky with natural light shifting
 export const dayTheme = {
   name: 'day',
   background: {
-    gradient: 'linear-gradient(-45deg, #4facfe, #00f2fe, #4facfe, #00d4ff)',
+    gradient: 'radial-gradient(ellipse at top left, #73c3f4ff 0%, #4fb1f3ff 25%, #6ec6f0 50%, #2d86c1ff 75%, #5eb3e8 100%)',
   },
   text: {
     primary: '#1a1a2e',
@@ -28,25 +28,13 @@ export const dayTheme = {
     borderFocus: 'rgba(26, 26, 46, 0.7)',
   },
   divider: 'rgba(26, 26, 46, 0.25)',
-  glass: {
-    border: 'rgba(26, 26, 46, 0.25)',
-  },
-  glassForm: {
-    border: 'rgba(26, 26, 46, 0.25)',
-  },
-  glassResult: {
-    border: 'rgba(26, 26, 46, 0.25)',
-  },
-  glassCard: {
-    border: 'rgba(26, 26, 46, 0.3)',
-  },
 };
 
-// Night Theme - Deep twilight
+// Night Theme - Deep twilight with subtle night sky shifting
 export const nightTheme = {
   name: 'night',
   background: {
-    gradient: 'linear-gradient(-45deg, #141e30, #243b55, #141e30, #0f2027)',
+    gradient: 'radial-gradient(ellipse at top left, #0d1b2a 0%, #1b3a52 25%, #41566cff 50%, #162938 75%, #0d1b2a 100%)',
   },
   text: {
     primary: '#ffffff',
@@ -70,18 +58,6 @@ export const nightTheme = {
     borderFocus: 'rgba(255, 255, 255, 0.8)',
   },
   divider: 'rgba(255, 255, 255, 0.3)',
-  glass: {
-    border: 'rgba(255, 255, 255, 0.35)',
-  },
-  glassForm: {
-    border: 'rgba(255, 255, 255, 0.35)',
-  },
-  glassResult: {
-    border: 'rgba(255, 255, 255, 0.35)',
-  },
-  glassCard: {
-    border: 'rgba(255, 255, 255, 0.40)',
-  },
 };
 
 // MUI Base Theme

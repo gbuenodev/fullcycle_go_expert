@@ -1,7 +1,8 @@
-import { Box, Container, Paper, Typography, Switch } from "@mui/material";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import WeatherForm from "./components/WeatherForm";
 import WeatherResult from "./components/WeatherResult";
 import CloudIcon from "@mui/icons-material/Cloud";
+import ThemeToggle from "./components/ThemeToggle";
 import { useWeather } from "./hooks/useWeather";
 import { dayTheme, nightTheme } from "./theme/theme";
 
@@ -12,73 +13,19 @@ function App() {
 
   return (
     <Box
-      className="animated-background"
+      className={`animated-background animated-background--${theme}`}
       sx={{
         minHeight: '100vh',
         width: '100vw',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         p: { xs: 2, sm: 3, md: 4 },
-        background: currentTheme.background.gradient,
+        pt: { xs: 3, sm: 4, md: 6 },
+        backgroundImage: currentTheme.background.gradient,
       }}
     >
         <Container maxWidth="sm" sx={{ p: 0, position: 'relative' }}>
-          {/* Theme Toggle - Fixed Position */}
-          <Box
-            className="glass transition-colors"
-            sx={{
-              position: 'fixed',
-              top: { xs: 16, sm: 24 },
-              right: { xs: 16, sm: 24 },
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              p: 1.5,
-              borderRadius: 3,
-              zIndex: 1000,
-              background: currentTheme.switch.background,
-              border: `1px solid ${currentTheme.glass.border}`,
-            }}
-          >
-            <Box
-              className="transition-colors"
-              sx={{
-                fontSize: '1.25rem',
-                color: currentTheme.switch.emoji,
-              }}
-            >
-              ☀️
-            </Box>
-            <Switch
-              checked={!isDay}
-              onChange={toggleTheme}
-              sx={{
-                '& .MuiSwitch-switchBase': {
-                  color: currentTheme.icon,
-                  '&.Mui-checked': {
-                    color: currentTheme.icon,
-                  },
-                  '&.Mui-checked + .MuiSwitch-track': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  },
-                },
-                '& .MuiSwitch-track': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                },
-              }}
-            />
-            <Box
-              className="transition-colors"
-              sx={{
-                fontSize: '1.25rem',
-                color: currentTheme.switch.emoji,
-              }}
-            >
-              🌙
-            </Box>
-          </Box>
-
           <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -86,8 +33,7 @@ function App() {
             alignItems: 'center'
           }}>
             {/* App Title */}
-            <Box sx={{ textAlign: 'center', width: '100%', mt: 2 }}>
-
+            <Box sx={{ textAlign: 'center', width: '100%' }}>
               <Box sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -121,22 +67,35 @@ function App() {
                 sx={{
                   fontSize: { xs: '1rem', sm: '1.25rem' },
                   color: currentTheme.text.onBackground,
+                  mb: 2.5
                 }}
               >
                 Informe o CEP para consultar o clima
               </Typography>
+
+              {/* Theme Toggle - Centered below subtitle */}
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                mt: 1
+              }}>
+                <ThemeToggle
+                  checked={!isDay}
+                  onChange={toggleTheme}
+                  scale={1.5}
+                />
+              </Box>
             </Box>
 
             {/* Search Form */}
             <Paper
               elevation={0}
-              className="glass-form"
+              className={`glass-panel glass-panel--${theme} transition-colors`}
               sx={{
                 width: '100%',
                 p: { xs: 3, sm: 4 },
                 borderRadius: 4,
-                background: 'transparent',
-                border: `1px solid ${currentTheme.glassForm.border}`,
+                backgroundColor: 'transparent',
               }}
             >
               <WeatherForm />

@@ -1,0 +1,297 @@
+/* Theme Toggle Switch */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: calc(var(--toggle-scale, 1) * 60px);
+  height: calc(var(--toggle-scale, 1) * 34px);
+  cursor: pointer;
+}
+
+.theme-switch #theme-toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #2196f3;
+  transition: background-color 0.4s ease;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.sun-moon {
+  position: absolute;
+  content: "";
+  height: calc(var(--toggle-scale, 1) * 26px);
+  width: calc(var(--toggle-scale, 1) * 26px);
+  left: calc(var(--toggle-scale, 1) * 4px);
+  bottom: calc(var(--toggle-scale, 1) * 4px);
+  background-color: yellow;
+  transition: background-color 0.4s ease, transform 0.4s ease;
+}
+
+/* Checked state - Night mode */
+#theme-toggle-input:checked + .toggle-slider {
+  background-color: #0a0a0a;
+}
+
+#theme-toggle-input:focus + .toggle-slider {
+  box-shadow: 0 0 calc(var(--toggle-scale, 1) * 1px) #2196f3;
+}
+
+#theme-toggle-input:checked + .toggle-slider .sun-moon {
+  transform: translateX(calc(var(--toggle-scale, 1) * 26px)) rotate(360deg);
+  background-color: white;
+}
+
+/* Unchecked state - Day mode - explicitly reset */
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon {
+  transform: translateX(0) rotate(0deg);
+  background-color: yellow;
+}
+
+/* Moon dots (craters) */
+.moon-dot {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  fill: gray;
+}
+
+#theme-toggle-input:checked + .toggle-slider .sun-moon .moon-dot {
+  opacity: 1;
+}
+
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon .moon-dot {
+  opacity: 0;
+}
+
+.toggle-slider.round {
+  border-radius: calc(var(--toggle-scale, 1) * 34px);
+}
+
+.toggle-slider.round .sun-moon {
+  border-radius: 50%;
+}
+
+#moon-dot-1 {
+  left: calc(var(--toggle-scale, 1) * 10px);
+  top: calc(var(--toggle-scale, 1) * 3px);
+  position: absolute;
+  width: calc(var(--toggle-scale, 1) * 6px);
+  height: calc(var(--toggle-scale, 1) * 6px);
+  z-index: 4;
+}
+
+#moon-dot-2 {
+  left: calc(var(--toggle-scale, 1) * 2px);
+  top: calc(var(--toggle-scale, 1) * 10px);
+  position: absolute;
+  width: calc(var(--toggle-scale, 1) * 10px);
+  height: calc(var(--toggle-scale, 1) * 10px);
+  z-index: 4;
+}
+
+#moon-dot-3 {
+  left: calc(var(--toggle-scale, 1) * 16px);
+  top: calc(var(--toggle-scale, 1) * 18px);
+  position: absolute;
+  width: calc(var(--toggle-scale, 1) * 3px);
+  height: calc(var(--toggle-scale, 1) * 3px);
+  z-index: 4;
+}
+
+/* Light rays (sun beams) */
+#light-ray-1,
+#light-ray-3,
+#light-ray-2 {
+  position: absolute;
+  z-index: -1;
+  fill: white;
+  opacity: 10%;
+  transition: opacity 0.4s ease;
+}
+
+#theme-toggle-input:checked + .toggle-slider .sun-moon #light-ray-1,
+#theme-toggle-input:checked + .toggle-slider .sun-moon #light-ray-2,
+#theme-toggle-input:checked + .toggle-slider .sun-moon #light-ray-3 {
+  opacity: 0;
+}
+
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon #light-ray-1,
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon #light-ray-2,
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon #light-ray-3 {
+  opacity: 10%;
+}
+
+#light-ray-1 {
+  left: calc(var(--toggle-scale, 1) * -8px);
+  top: calc(var(--toggle-scale, 1) * -8px);
+  width: calc(var(--toggle-scale, 1) * 43px);
+  height: calc(var(--toggle-scale, 1) * 43px);
+}
+
+#light-ray-2 {
+  left: -50%;
+  top: -50%;
+  width: calc(var(--toggle-scale, 1) * 55px);
+  height: calc(var(--toggle-scale, 1) * 55px);
+}
+
+#light-ray-3 {
+  left: calc(var(--toggle-scale, 1) * -18px);
+  top: calc(var(--toggle-scale, 1) * -18px);
+  width: calc(var(--toggle-scale, 1) * 60px);
+  height: calc(var(--toggle-scale, 1) * 60px);
+}
+
+/* Clouds */
+.cloud-light,
+.cloud-dark {
+  position: absolute;
+  animation-name: cloud-move;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  transition: opacity 0.4s ease;
+}
+
+.cloud-light {
+  fill: #eee;
+}
+
+.cloud-dark {
+  fill: #ccc;
+  animation-delay: 1s;
+}
+
+/* Hide clouds in night mode */
+#theme-toggle-input:checked + .toggle-slider .sun-moon .cloud-light,
+#theme-toggle-input:checked + .toggle-slider .sun-moon .cloud-dark {
+  opacity: 0;
+}
+
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon .cloud-light,
+#theme-toggle-input:not(:checked) + .toggle-slider .sun-moon .cloud-dark {
+  opacity: 1;
+}
+
+#cloud-1 {
+  left: calc(var(--toggle-scale, 1) * 30px);
+  top: calc(var(--toggle-scale, 1) * 15px);
+  width: calc(var(--toggle-scale, 1) * 40px);
+}
+
+#cloud-2 {
+  left: calc(var(--toggle-scale, 1) * 44px);
+  top: calc(var(--toggle-scale, 1) * 10px);
+  width: calc(var(--toggle-scale, 1) * 20px);
+}
+
+#cloud-3 {
+  left: calc(var(--toggle-scale, 1) * 18px);
+  top: calc(var(--toggle-scale, 1) * 24px);
+  width: calc(var(--toggle-scale, 1) * 30px);
+}
+
+#cloud-4 {
+  left: calc(var(--toggle-scale, 1) * 36px);
+  top: calc(var(--toggle-scale, 1) * 18px);
+  width: calc(var(--toggle-scale, 1) * 40px);
+}
+
+#cloud-5 {
+  left: calc(var(--toggle-scale, 1) * 48px);
+  top: calc(var(--toggle-scale, 1) * 14px);
+  width: calc(var(--toggle-scale, 1) * 20px);
+}
+
+#cloud-6 {
+  left: calc(var(--toggle-scale, 1) * 22px);
+  top: calc(var(--toggle-scale, 1) * 26px);
+  width: calc(var(--toggle-scale, 1) * 30px);
+}
+
+@keyframes cloud-move {
+  0% {
+    transform: translateX(0px);
+  }
+  40% {
+    transform: translateX(calc(var(--toggle-scale, 1) * 4px));
+  }
+  80% {
+    transform: translateX(calc(var(--toggle-scale, 1) * -4px));
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+/* Stars */
+.stars {
+  transform: translateY(calc(var(--toggle-scale, 1) * -32px));
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.star {
+  fill: white;
+  position: absolute;
+  animation-name: star-twinkle;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+#theme-toggle-input:checked + .toggle-slider .stars {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+#theme-toggle-input:not(:checked) + .toggle-slider .stars {
+  transform: translateY(calc(var(--toggle-scale, 1) * -32px));
+  opacity: 0;
+}
+
+#star-1 {
+  width: calc(var(--toggle-scale, 1) * 20px);
+  top: calc(var(--toggle-scale, 1) * 2px);
+  left: calc(var(--toggle-scale, 1) * 3px);
+  animation-delay: 0.3s;
+}
+
+#star-2 {
+  width: calc(var(--toggle-scale, 1) * 6px);
+  top: calc(var(--toggle-scale, 1) * 16px);
+  left: calc(var(--toggle-scale, 1) * 3px);
+}
+
+#star-3 {
+  width: calc(var(--toggle-scale, 1) * 12px);
+  top: calc(var(--toggle-scale, 1) * 20px);
+  left: calc(var(--toggle-scale, 1) * 10px);
+  animation-delay: 0.6s;
+}
+
+#star-4 {
+  width: calc(var(--toggle-scale, 1) * 18px);
+  top: calc(var(--toggle-scale, 1) * 0px);
+  left: calc(var(--toggle-scale, 1) * 18px);
+  animation-delay: 1.3s;
+}
+
+@keyframes star-twinkle {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  80% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
