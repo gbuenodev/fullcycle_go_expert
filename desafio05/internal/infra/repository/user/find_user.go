@@ -13,7 +13,7 @@ import (
 )
 
 type UserEntityMongo struct {
-	Id   string `bson:"_id"`
+	ID   string `bson:"_id"`
 	Name string `bson:"name"`
 }
 
@@ -44,7 +44,7 @@ func (ur *UserRepository) FindById(ctx context.Context, id string) (*userentity.
 	}
 
 	return &userentity.User{
-		Id:   user.Id,
+		ID:   user.ID,
 		Name: user.Name,
 	}, nil
 }

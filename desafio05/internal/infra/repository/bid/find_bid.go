@@ -33,7 +33,7 @@ func (br *BidRepository) FindBidByAuctionId(ctx context.Context, auctionId strin
 	var bids []*bidentity.Bid
 	for _, bid := range bidEntityMongo {
 		bids = append(bids, &bidentity.Bid{
-			Id:        bid.Id,
+			ID:        bid.ID,
 			UserId:    bid.UserId,
 			AuctionId: bid.AuctionId,
 			Amount:    bid.Amount,
@@ -56,7 +56,7 @@ func (br *BidRepository) FindWinningBidByAuctionId(ctx context.Context, auctionI
 	}
 
 	return &bidentity.Bid{
-		Id:        bidEntityMongo.Id,
+		ID:        bidEntityMongo.ID,
 		UserId:    bidEntityMongo.UserId,
 		AuctionId: bidEntityMongo.AuctionId,
 		Amount:    bidEntityMongo.Amount,

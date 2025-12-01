@@ -8,13 +8,13 @@ import (
 	"github.com/gbuenodev/fullcycle_go_expert/desafio05/configs/logger"
 	auctionentity "github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/entity/auction_entity"
 	bidentity "github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/entity/bid_entity"
-	"github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/infra/store/auction"
+	"github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/infra/repository/auction"
 	internalerrors "github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/internal_errors"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type BidEntityMongo struct {
-	Id        string  `bson:"id"`
+	ID        string  `bson:"id"`
 	UserId    string  `bson:"user_id"`
 	AuctionId string  `bson:"auction_id"`
 	Amount    float64 `bson:"amount"`
@@ -47,7 +47,7 @@ func (br *BidRepository) Create(ctx context.Context, bids []bidentity.Bid) *inte
 			}
 
 			bidEntityMongo := &BidEntityMongo{
-				Id:        bid.Id,
+				ID:        bid.ID,
 				UserId:    bid.UserId,
 				AuctionId: bid.AuctionId,
 				Amount:    bid.Amount,
@@ -55,7 +55,7 @@ func (br *BidRepository) Create(ctx context.Context, bids []bidentity.Bid) *inte
 			}
 
 			if _, err := br.Collection.InsertOne(ctx, bidEntityMongo); err != nil {
-				msg := fmt.Sprintf("error trying to insert bid with id: %s", bid.Id)
+				msg := fmt.Sprintf("error trying to insert bid with id: %s", bid.ID)
 				logger.Error(msg, err)
 				return
 			}

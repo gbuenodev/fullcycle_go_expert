@@ -34,11 +34,7 @@ func (ar *AuctionRepository) FindAuctionById(ctx context.Context, id string) (*a
 	}, nil
 }
 
-func (ar *AuctionRepository) FindAuctions(
-	ctx context.Context,
-	status auctionentity.AuctionStatus,
-	category, productName string,
-) ([]*auctionentity.Auction, *internalerrors.InternalError) {
+func (ar *AuctionRepository) FindAuctions(ctx context.Context, status auctionentity.AuctionStatus, category, productName string) ([]*auctionentity.Auction, *internalerrors.InternalError) {
 	filter := bson.M{}
 
 	if status != 0 {
