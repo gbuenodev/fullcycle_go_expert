@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/gbuenodev/fullcycle_go_expert/desafio05/configs/database/mongodb"
+	"github.com/gbuenodev/fullcycle_go_expert/desafio05/configs/db/mongodb"
 	"github.com/joho/godotenv"
 )
 
