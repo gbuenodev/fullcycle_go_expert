@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/gbuenodev/fullcycle_go_expert/desafio05/configs/logger"
+	auctionentity "github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/entity/auction_entity"
 	bidentity "github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/entity/bid_entity"
 	internalerrors "github.com/gbuenodev/fullcycle_go_expert/desafio05/internal/internal_errors"
 )
 
 type BidUseCase struct {
-	BidRepository bidentity.BidRepositoryInterface
+	BidRepository     bidentity.BidRepositoryInterface
+	AuctionRepository auctionentity.AuctionRepositoryInterface
 
 	timer               *time.Timer
 	maxBatchSize        int
@@ -42,13 +44,14 @@ type BidUseCaseInterface interface {
 
 var bidBatch []bidentity.Bid
 
-func NewBidUseCase(bidRepository bidentity.BidRepositoryInterface) BidUseCaseInterface {
+func NewBidUseCase(bidRepository bidentity.BidRepositoryInterface, auctionRepository auctionentity.AuctionRepositoryInterface) BidUseCaseInterface {
 	ctx := context.Background()
 	maxSizeInterval := getMaxBatchSizeInterval()
 	maxBatchSize := getMaxBatchSize()
 
 	bid := &BidUseCase{
 		BidRepository:       bidRepository,
+		AuctionRepository:   auctionRepository,
 		maxBatchSize:        maxBatchSize,
 		batchInsertInterval: maxSizeInterval,
 		timer:               time.NewTimer(maxSizeInterval),
@@ -61,6 +64,15 @@ func NewBidUseCase(bidRepository bidentity.BidRepositoryInterface) BidUseCaseInt
 }
 
 func (bu *BidUseCase) CreateBid(ctx context.Context, bidInput *BidInputDTO) *internalerrors.InternalError {
+	auction, err := bu.AuctionRepository.FindAuctionById(ctx, bidInput.AuctionID)
+	if err != nil {
+		return err
+	}
+
+	if auction.Status == auctionentity.Completed {
+		return internalerrors.NewForbiddenError("auction is closed")
+	}
+
 	bid, err := bidentity.NewBid(bidInput.UserID, bidInput.AuctionID, bidInput.Amount)
 	if err != nil {
 		return err

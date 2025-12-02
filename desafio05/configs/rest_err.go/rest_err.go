@@ -49,12 +49,23 @@ func NewNotFoundError(message string) *RestErr {
 	}
 }
 
+func NewForbiddenError(message string) *RestErr {
+	return &RestErr{
+		Message: message,
+		Err:     "forbidden",
+		Code:    http.StatusForbidden,
+		Causes:  nil,
+	}
+}
+
 func ConvertError(internalerrors *internalerrors.InternalError) *RestErr {
 	switch internalerrors.Err {
 	case "bad_request":
 		return NewBadRequestError(internalerrors.Error())
 	case "not_found":
 		return NewNotFoundError(internalerrors.Error())
+	case "forbidden":
+		return NewForbiddenError(internalerrors.Error())
 	default:
 		return NewInternalServerError(internalerrors.Error())
 	}

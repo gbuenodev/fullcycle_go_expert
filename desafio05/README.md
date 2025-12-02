@@ -17,6 +17,7 @@ Sistema de leilões que permite criar e gerenciar leilões, fazer lances e consu
 - **Sistema de Lances**
   - Criar lances em leilões ativos
   - Listar lances de um leilão
+  - Validação de status do leilão (impede lances em leilões encerrados)
 
 - **Usuários**
   - Criar novo usuário
@@ -28,6 +29,10 @@ Sistema de leilões que permite criar e gerenciar leilões, fazer lances e consu
     - Category mínimo 3 caracteres
     - Description entre 10-50 caracteres
     - Condition e Status validados (enum)
+  - **Bid:**
+    - Leilão deve existir
+    - Leilão deve estar ativo (status = 0)
+    - Retorna 403 Forbidden se tentar lance em leilão encerrado
   - **User:**
     - Name não pode ser vazio
     - Name mínimo 2 caracteres
@@ -191,7 +196,18 @@ Criar um lance em um leilão.
 }
 ```
 
-**Response:** `201 Created`
+**Possíveis Respostas:**
+- `201 Created` - Lance criado com sucesso
+- `403 Forbidden` - Leilão encerrado
+  ```json
+  {
+    "message": "auction is closed",
+    "err": "forbidden",
+    "code": 403
+  }
+  ```
+- `400 Bad Request` - Dados inválidos
+- `404 Not Found` - Leilão não encontrado
 
 ---
 
@@ -352,6 +368,8 @@ MAX_BATCH_SIZE=10
 | `MAX_BATCH_SIZE` | Tamanho máximo do batch de inserções | `10` |
 
 **Notas:**
+- O arquivo `.env` é **opcional** quando rodando via Docker - as variáveis são definidas no `docker-compose.yml`
+- Para desenvolvimento local, configure o arquivo `cmd/auction/.env` com as variáveis necessárias
 - Quando rodando via Docker Compose, `MONGODB_URL` é sobrescrita automaticamente para `mongodb://auction-mongodb:27017`
 - `AUCTION_DURATION` e `BATCH_INSERT_INTERVAL` aceitam unidades: `s` (segundos), `m` (minutos), `h` (horas)
 - Ajuste `MAX_BATCH_SIZE` conforme o volume de operações da sua aplicação

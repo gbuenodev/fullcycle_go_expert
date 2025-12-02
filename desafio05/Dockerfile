@@ -24,9 +24,6 @@ RUN apk --no-cache add ca-certificates
 # Copy binary from builder
 COPY --from=builder /app/bin/auction .
 
-# Copy .env file
-COPY cmd/auction/.env ./cmd/auction/.env
-
 EXPOSE 8080
 
 CMD ["./auction"]

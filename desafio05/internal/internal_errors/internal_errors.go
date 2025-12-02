@@ -29,3 +29,10 @@ func NewBadRequestError(message string) *InternalError {
 		Err:     "bad_request",
 	}
 }
+
+func NewForbiddenError(message string) *InternalError {
+	return &InternalError{
+		Message: message,
+		Err:     "forbidden",
+	}
+}

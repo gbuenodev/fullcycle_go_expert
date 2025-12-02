@@ -22,10 +22,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	if err := godotenv.Load("cmd/auction/.env"); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-		return
-	}
+	_ = godotenv.Load("cmd/auction/.env")
 
 	db, err := mongodb.NewMongoDBConnection(ctx)
 	if err != nil {
@@ -67,7 +64,7 @@ func initDependencies(db *mongo.Database) (
 
 	userController = usercontroller.NewUserController(userusecase.NewUserUseCase(userRepository))
 	auctionController = auctioncontroller.NewAuctionController(auctionusecase.NewAuctionUseCase(auctionRepository, bidRepository))
-	bidController = bidController.NewBidController(bidusecase.NewBidUseCase(bidRepository))
+	bidController = bidController.NewBidController(bidusecase.NewBidUseCase(bidRepository, auctionRepository))
 
 	return userController, bidController, auctionController
 }
