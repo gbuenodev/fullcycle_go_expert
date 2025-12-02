@@ -29,12 +29,12 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	err := uc.UserUseCase.CreateUser(context.Background(), &userInputDTO)
+	output, err := uc.UserUseCase.CreateUser(context.Background(), &userInputDTO)
 	if err != nil {
 		errRest := resterr.ConvertError(err)
 		c.JSON(errRest.Code, errRest)
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, output)
 }

@@ -19,13 +19,18 @@ Sistema de leilões que permite criar e gerenciar leilões, fazer lances e consu
   - Listar lances de um leilão
 
 - **Usuários**
+  - Criar novo usuário
   - Consultar informações de usuário
 
 - **Validações de Negócio**
-  - ProductName não pode ser vazio
-  - Category mínimo 3 caracteres
-  - Description entre 10-50 caracteres
-  - Condition e Status validados (enum)
+  - **Auction:**
+    - ProductName não pode ser vazio
+    - Category mínimo 3 caracteres
+    - Description entre 10-50 caracteres
+    - Condition e Status validados (enum)
+  - **User:**
+    - Name não pode ser vazio
+    - Name mínimo 2 caracteres
 
 ## 🏗️ Arquitetura
 
@@ -64,7 +69,7 @@ desafio05/
 
 ## 🛠️ Stack Tecnológica
 
-- **Go 1.23+**
+- **Go 1.25+**
 - **MongoDB** - Banco de dados NoSQL
 - **Gin** - Web framework
 - **Zap** - Structured logging
@@ -75,7 +80,7 @@ desafio05/
 
 - **Docker** e **Docker Compose** instalados
 - **Make** (opcional, mas recomendado)
-- **Go 1.23+** (apenas para desenvolvimento local)
+- **Go 1.25+** (apenas para desenvolvimento local)
 
 ## 🚀 Quick Start
 
@@ -199,10 +204,54 @@ Listar todos os lances de um leilão.
 
 ### Users
 
+#### POST /user
+Criar um novo usuário.
+
+**Request Body:**
+```json
+{
+  "name": "João Silva"
+}
+```
+
+**Validações:**
+- `name`: não pode ser vazio
+- `name`: mínimo 2 caracteres
+
+**Response:** `201 Created`
+```json
+{
+  "id": "generated-user-id",
+  "name": "João Silva"
+}
+```
+
+---
+
 #### GET /user/:userId
 Buscar informações de um usuário.
 
 **Response:** `200 OK`
+```json
+{
+  "id": "user-id",
+  "name": "João Silva"
+}
+```
+
+---
+
+### Health Check
+
+#### GET /health
+Verificar status da API.
+
+**Response:** `200 OK`
+```json
+{
+  "status": "ok"
+}
+```
 
 ---
 
@@ -234,6 +283,18 @@ go run cmd/auction/main.go  # Rodar app
 
 ## 🧪 Testando a API
 
+### Health Check
+```bash
+curl http://localhost:8080/health
+```
+
+### Criar um usuário
+```bash
+curl -X POST http://localhost:8080/user \
+  -H "Content-Type: application/json" \
+  -d '{"name": "João Silva"}'
+```
+
 ### Criar um leilão
 ```bash
 curl -X POST http://localhost:8080/auctions \
@@ -256,10 +317,15 @@ curl "http://localhost:8080/auctions?status=0"
 curl -X POST http://localhost:8080/bid \
   -H "Content-Type: application/json" \
   -d '{
-    "userId": "user-123",
+    "userId": "user-id-aqui",
     "auctionId": "auction-id-aqui",
     "amount": 5000.00
   }'
+```
+
+### Consultar vencedor de um leilão
+```bash
+curl http://localhost:8080/auctions/winner/auction-id-aqui
 ```
 
 ## 🗄️ Variáveis de Ambiente
@@ -273,7 +339,19 @@ BATCH_INSERT_INTERVAL=7m
 MAX_BATCH_SIZE=10
 ```
 
-**Nota:** Quando rodando via Docker Compose, a variável `MONGODB_URL` é sobrescrita automaticamente para usar o hostname do container MongoDB.
+**Descrição das variáveis:**
+
+| Variável | Descrição | Valor Padrão |
+|----------|-----------|--------------|
+| `MONGODB_URL` | URL de conexão do MongoDB | `mongodb://localhost:27017` |
+| `MONGODB_DB` | Nome do database | `auctions` |
+| `BATCH_INSERT_INTERVAL` | Intervalo para processamento batch de inserções | `7m` |
+| `MAX_BATCH_SIZE` | Tamanho máximo do batch de inserções | `10` |
+
+**Notas:**
+- Quando rodando via Docker Compose, `MONGODB_URL` é sobrescrita automaticamente para `mongodb://auction-mongodb:27017`
+- `BATCH_INSERT_INTERVAL` aceita unidades como: `s` (segundos), `m` (minutos), `h` (horas)
+- Ajuste `MAX_BATCH_SIZE` conforme o volume de operações da sua aplicação
 
 ## 🐛 Troubleshooting
 

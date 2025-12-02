@@ -21,7 +21,7 @@ type UserOutputDTO struct {
 }
 
 type UserUsecaseInterface interface {
-	CreateUser(ctx context.Context, input *UserInputDTO) *internalerrors.InternalError
+	CreateUser(ctx context.Context, input *UserInputDTO) (*UserOutputDTO, *internalerrors.InternalError)
 	FindUserById(ctx context.Context, id string) (*UserOutputDTO, *internalerrors.InternalError)
 }
 
@@ -31,15 +31,18 @@ func NewUserUseCase(userRepository userentity.UserRepositoryInterface) UserUseca
 	}
 }
 
-func (uc *UserUseCase) CreateUser(ctx context.Context, input *UserInputDTO) *internalerrors.InternalError {
+func (uc *UserUseCase) CreateUser(ctx context.Context, input *UserInputDTO) (*UserOutputDTO, *internalerrors.InternalError) {
 	user, err := userentity.NewUser(input.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := uc.UserRepository.CreateUser(ctx, user); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &UserOutputDTO{
+		ID:   user.ID,
+		Name: user.Name,
+	}, nil
 }
