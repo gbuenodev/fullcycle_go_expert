@@ -35,14 +35,14 @@ type BidOutputDTO struct {
 }
 
 type BidUseCaseInterface interface {
-	CreateBid(ctx context.Context, bidInput *BidInputDTO) (*BidOutputDTO, *internalerrors.InternalError)
+	CreateBid(ctx context.Context, bidInput *BidInputDTO) *internalerrors.InternalError
 	FindBidByAuctionId(ctx context.Context, auctionId string) ([]*BidOutputDTO, *internalerrors.InternalError)
 	FindWinningBidByAuctionId(ctx context.Context, auctionId string) (*BidOutputDTO, *internalerrors.InternalError)
 }
 
 var bidBatch []bidentity.Bid
 
-func NewBidUseCase(bidRepository bidentity.BidRepositoryInterface) *BidUseCase {
+func NewBidUseCase(bidRepository bidentity.BidRepositoryInterface) BidUseCaseInterface {
 	ctx := context.Background()
 	maxSizeInterval := getMaxBatchSizeInterval()
 	maxBatchSize := getMaxBatchSize()
@@ -70,7 +70,6 @@ func (bu *BidUseCase) CreateBid(ctx context.Context, bidInput *BidInputDTO) *int
 	bu.bidChannel <- *bid
 
 	return nil
-
 }
 
 func getMaxBatchSizeInterval() time.Duration {

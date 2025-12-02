@@ -26,7 +26,14 @@ type BidRepository struct {
 	AuctionRepository *auction.AuctionRepository
 }
 
-func (br *BidRepository) Create(ctx context.Context, bids []bidentity.Bid) *internalerrors.InternalError {
+func NewBidRepository(db *mongo.Database, auctionRepository *auction.AuctionRepository) *BidRepository {
+	return &BidRepository{
+		Collection:        db.Collection("bids"),
+		AuctionRepository: auctionRepository,
+	}
+}
+
+func (br *BidRepository) CreateBid(ctx context.Context, bids []bidentity.Bid) *internalerrors.InternalError {
 	var wg sync.WaitGroup
 	for _, bid := range bids {
 		wg.Add(1)

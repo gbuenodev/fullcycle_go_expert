@@ -41,14 +41,16 @@ type ProductCondition int64
 type AuctionStatus int64
 
 type AuctionUseCaseInterface interface {
-	CreateAuction(ctx context.Context, input AuctionInputDTO) (*AuctionOutputDTO, error)
-	FindAuctionById(ctx context.Context, id string) (*AuctionOutputDTO, error)
-	FindAuctions(ctx context.Context) ([]*AuctionOutputDTO, error)
+	CreateAuction(ctx context.Context, input *AuctionInputDTO) *internalerrors.InternalError
+	FindAuctionById(ctx context.Context, id string) (*AuctionOutputDTO, *internalerrors.InternalError)
+	FindAuctions(ctx context.Context, status AuctionStatus, category, productName string) ([]*AuctionOutputDTO, *internalerrors.InternalError)
+	FindWinningBidByAuctionId(context.Context, string) (*WinningInfoOutputDTO, *internalerrors.InternalError)
 }
 
-func NewAuctionUseCase(auctionRepository auctionentity.AuctionRepositoryInterface) *AuctionUseCase {
+func NewAuctionUseCase(auctionRepository auctionentity.AuctionRepositoryInterface, bidRepository bidentity.BidRepositoryInterface) AuctionUseCaseInterface {
 	return &AuctionUseCase{
 		AuctionRepository: auctionRepository,
+		BidRepository:     bidRepository,
 	}
 }
 

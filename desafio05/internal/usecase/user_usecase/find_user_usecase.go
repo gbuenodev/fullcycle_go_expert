@@ -17,11 +17,13 @@ type UserOutputDTO struct {
 }
 
 type UserUsecaseInterface interface {
-	FindUserById(id string) (*UserOutputDTO, *internalerrors.InternalError)
+	FindUserById(ctx context.Context, id string) (*UserOutputDTO, *internalerrors.InternalError)
 }
 
-func NewUserUseCase() *UserUseCase {
-	return &UserUseCase{}
+func NewUserUseCase(userRepository userentity.UserRepositoryInterface) UserUsecaseInterface {
+	return &UserUseCase{
+		UserRepository: userRepository,
+	}
 }
 
 func (uc *UserUseCase) FindUserById(ctx context.Context, id string) (*UserOutputDTO, *internalerrors.InternalError) {
