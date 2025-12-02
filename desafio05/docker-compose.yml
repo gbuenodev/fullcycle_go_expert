@@ -1,7 +1,42 @@
 services:
   mongodb:
     image: mongo
-    container_name: mongodb
+    container_name: auction-mongodb
     ports:
       - "27017:27017"
+    networks:
+      - auction-network
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
+
+  auction-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auction-api
+    ports:
+      - "8080:8080"
+    networks:
+      - auction-network
+    environment:
+      - MONGODB_URL=mongodb://auction-mongodb:27017
+      - MONGODB_DB=auctions
+      - BATCH_INSERT_INTERVAL=7m
+      - MAX_BATCH_SIZE=10
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  auction-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
