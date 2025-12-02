@@ -12,7 +12,7 @@ type UserUseCase struct {
 }
 
 type UserInputDTO struct {
-	Name string `json:"name" binding:"required, min=2"`
+	Name string `json:"name" binding:"required,min=2"`
 }
 
 type UserOutputDTO struct {

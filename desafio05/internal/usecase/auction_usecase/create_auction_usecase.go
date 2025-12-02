@@ -16,10 +16,10 @@ type AuctionUseCase struct {
 }
 
 type AuctionInputDTO struct {
-	ProductName string           `json:"product_name" binding:"required, min=1"`
-	Category    string           `json:"category" binding:"required, min=2"`
-	Description string           `json:"description" binding:"required, min=2, max=200"`
-	Condition   ProductCondition `json:"condition" binding:"oneOf=1 2 3"`
+	ProductName string           `json:"product_name" binding:"required,min=1"`
+	Category    string           `json:"category" binding:"required,min=2"`
+	Description string           `json:"description" binding:"required,min=2,max=200"`
+	Condition   ProductCondition `json:"condition" binding:"oneof=0 1 2"`
 }
 
 type AuctionOutputDTO struct {

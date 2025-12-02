@@ -61,7 +61,6 @@ func NewBidUseCase(bidRepository bidentity.BidRepositoryInterface) BidUseCaseInt
 }
 
 func (bu *BidUseCase) CreateBid(ctx context.Context, bidInput *BidInputDTO) *internalerrors.InternalError {
-
 	bid, err := bidentity.NewBid(bidInput.UserID, bidInput.AuctionID, bidInput.Amount)
 	if err != nil {
 		return err
