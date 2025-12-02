@@ -41,7 +41,7 @@ func main() {
 	router.GET("/auctions", auctionController.FindAuctions)
 	router.GET("/auctions/:auctionId", auctionController.FindAuctionById)
 	router.POST("/auctions", auctionController.CreateAuction)
-	router.GET("/auctions/winner/:auctionId", auctionController.CreateAuction)
+	router.GET("/auctions/winner/:auctionId", auctionController.FindWinningBidByAuctionId)
 	router.POST("/bid", bidController.CreateBid)
 	router.GET("/bid/:auctionId", bidController.FindBidByAuctionId)
 	router.GET("/user/:userId", userController.FindUserById)
