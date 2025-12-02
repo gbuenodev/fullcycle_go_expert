@@ -45,6 +45,13 @@ func main() {
 	router.POST("/bid", bidController.CreateBid)
 	router.GET("/bid/:auctionId", bidController.FindBidByAuctionId)
 	router.GET("/user/:userId", userController.FindUserById)
+	router.POST("/user", userController.CreateUser)
+
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "ok",
+		})
+	})
 
 	router.Run(":8080")
 }
