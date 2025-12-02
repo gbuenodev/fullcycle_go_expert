@@ -262,6 +262,7 @@ Verificar status da API.
 make run               # Subir tudo com Docker (MongoDB + API containerizados)
 make dev               # Desenvolvimento local (MongoDB no Docker, app local)
 make build             # Compilar binário Go
+make test              # Executar todos os testes
 make clean             # Remover tudo (containers, volumes, binários)
 ```
 
@@ -335,6 +336,7 @@ Configuradas em `cmd/auction/.env`:
 ```env
 MONGODB_URL=mongodb://localhost:27017
 MONGODB_DB=auctions
+AUCTION_DURATION=24h
 BATCH_INSERT_INTERVAL=7m
 MAX_BATCH_SIZE=10
 ```
@@ -345,13 +347,15 @@ MAX_BATCH_SIZE=10
 |----------|-----------|--------------|
 | `MONGODB_URL` | URL de conexão do MongoDB | `mongodb://localhost:27017` |
 | `MONGODB_DB` | Nome do database | `auctions` |
+| `AUCTION_DURATION` | Duração até finalização automática do leilão | `24h` |
 | `BATCH_INSERT_INTERVAL` | Intervalo para processamento batch de inserções | `7m` |
 | `MAX_BATCH_SIZE` | Tamanho máximo do batch de inserções | `10` |
 
 **Notas:**
 - Quando rodando via Docker Compose, `MONGODB_URL` é sobrescrita automaticamente para `mongodb://auction-mongodb:27017`
-- `BATCH_INSERT_INTERVAL` aceita unidades como: `s` (segundos), `m` (minutos), `h` (horas)
+- `AUCTION_DURATION` e `BATCH_INSERT_INTERVAL` aceitam unidades: `s` (segundos), `m` (minutos), `h` (horas)
 - Ajuste `MAX_BATCH_SIZE` conforme o volume de operações da sua aplicação
+- Leilões são finalizados automaticamente após `AUCTION_DURATION` (padrão: 24h)
 
 ## 🐛 Troubleshooting
 
@@ -386,17 +390,6 @@ make docker-build
 docker-compose build --no-cache
 docker-compose up -d
 ```
-
-## 🎯 Próximos Passos
-
-- [ ] Implementar autenticação JWT
-- [ ] Adicionar testes unitários e de integração
-- [ ] Implementar sistema de fechamento automático de leilões
-- [ ] Adicionar paginação nas listagens
-- [ ] Documentação OpenAPI/Swagger
-- [ ] Rate limiting
-- [ ] Logs estruturados completos
-- [ ] Métricas e observabilidade
 
 ## 📝 Licença
 

@@ -27,6 +27,7 @@ services:
     environment:
       - MONGODB_URL=mongodb://auction-mongodb:27017
       - MONGODB_DB=auctions
+      - AUCTION_DURATION=24h
       - BATCH_INSERT_INTERVAL=7m
       - MAX_BATCH_SIZE=10
     depends_on:

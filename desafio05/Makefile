@@ -1,4 +1,4 @@
-.PHONY: help run dev build clean docker-up docker-down docker-build docker-logs docker-clean
+.PHONY: help run dev build test clean docker-up docker-down docker-build docker-logs docker-clean
 
 .DEFAULT_GOAL := help
 
@@ -15,6 +15,9 @@ dev: ## Run locally (start MongoDB only, run Go app locally)
 
 build: ## Build the Go binary
 	go build -o bin/auction cmd/auction/main.go
+
+test: ## Run all tests
+	go test -v ./...
 
 clean: ## Remove everything (containers, volumes, binaries)
 	docker-compose down -v
