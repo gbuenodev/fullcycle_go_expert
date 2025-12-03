@@ -447,8 +447,6 @@ make redis-cli
 
 ### Sliding Window
 
-A janela é "deslizante" (sliding window):
-
 ```
 RATE_LIMIT_WINDOW=1 segundo
 RATE_LIMIT_IP=10
