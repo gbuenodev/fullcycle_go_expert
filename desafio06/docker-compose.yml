@@ -1,0 +1,29 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - ratelimit-network
+
+  rate-limiter:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      REDIS_ADDR: redis:6379
+      RATE_LIMIT_IP: 10
+      RATE_LIMIT_TOKEN_BASIC: 50
+      RATE_LIMIT_TOKEN_PREMIUM: 200
+      RATE_LIMIT_WINDOW: 1
+      RATE_LIMIT_IP_BLOCK_DURATION: 300
+      RATE_LIMIT_TOKEN_BLOCK_DURATION: 300
+      SERVER_PORT: 8080
+    networks:
+      - ratelimit-network
+
+networks:
+  ratelimit-network:
+    driver: bridge
